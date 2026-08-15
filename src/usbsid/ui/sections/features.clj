@@ -14,7 +14,7 @@
   [{:keys [config connection hover-popup]}]
   (let [fw-line          (or (:fw-line connection) :v0_7)
         flip-mix-disable (not (model/fw-supports? fw-line :flipped))
-        confirm-disable  (not (model/fw-supports? fw-line :disable-changedetect))
+        confirm-disable  (not (model/fw-supports? fw-line :socket_change_detect))
         fwverint         (model/parse-fw-version (:fw-version connection))]
     {:fx/type     :v-box
      :style-class "c64-vbox"
@@ -95,7 +95,20 @@
          :spacing     6
          :children
          (cond->
-          [(w/c64-row "Mirrored"
+          [(w/c64-row "Preset auto detect"
+                      (common/toggles
+                       :onoff
+                       {:fx/type     :toggle-button
+                        :text        (if (:preset_auto_detect config) "ON " "OFF")
+                        :selected    (:preset_auto_detect config)
+                        :on-action   {:event/type :config-changed
+                                      :path       [:preset_auto_detect]
+                                      :value      (not (:preset_auto_detect config))}
+                        :style-class "c64-toggle"}
+                       {:hover-popup hover-popup
+                        :hover-text  "Enable/ Disable the boards silent autodetection during socket preset implementation"
+                        :popup-key   [:preset_auto_detect :enabled]}))
+           (w/c64-row "Mirrored"
                       (common/toggles
                        :onoff
                        {:fx/type     :toggle-button
@@ -195,16 +208,16 @@
                            (= (:status connection) :connected)
                            (< (model/parse-pcb-version (:pcb-version connection)) 15)))
          :children
-         [(w/c64-row "Disable Socket Change Detect"
+         [(w/c64-row "Socket Change Detection on boot"
                      (common/toggles
                       :onoff
                       {:fx/type     :toggle-button
-                       :text        (if (:disable-changedetect config) "ON " "OFF")
-                       :selected    (:disable-changedetect config)
+                       :text        (if (:socket_change_detect config) "ON " "OFF")
+                       :selected    (:socket_change_detect config)
                        :on-action   {:event/type :config-changed
-                                     :path       [:disable-changedetect]
-                                     :value      (not (:disable-changedetect config))}
+                                     :path       [:socket_change_detect]
+                                     :value      (not (:socket_change_detect config))}
                        :style-class "c64-toggle"}
                       {:hover-popup hover-popup
                        :hover-text  "Disable detection of changes in the sockets on boot. Effectively overriding any voltage settings!"
-                       :popup-key   [:detection :locked]}))]}]}]}))
+                       :popup-key   [:socket_change_detect :locked]}))]}]}]}))

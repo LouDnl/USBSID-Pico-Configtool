@@ -133,7 +133,8 @@
 (def fw-capabilities
   {:legacy #{:clock :sockets :led :rgb :fmopl :stereo :audio-sw :mirrored}
    :v0_7   #{:clock :sockets :led :rgb :fmopl :stereo :audio-sw :mirrored
-             :flipped :mixed :need-confirmation :disable-changedetect}})
+             :flipped :mixed :need-confirmation :socket_change_detect
+             :last-preset :preset_auto_detect}})
 
 (defn fw-supports?
   "True if the given firmware line exposes the given capability keyword."
@@ -243,6 +244,7 @@
    :flipped              false
    :mixed                false
    :need-confirmation    false
-   :disable-changedetect false
+   :socket_change_detect true
+   :preset_auto_detect   true
    :last-preset          :dual-both ; defaults to 2 dual-both
    :raw-config           nil}) ; save the raw config bytes just in case we need to verify things

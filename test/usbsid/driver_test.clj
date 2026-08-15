@@ -47,7 +47,7 @@
                  60 7])) ; mirrored|flipped|mixed all set
         cfg (driver/parse-config-bytes buf)]
     (is (true?  (:need-confirmation cfg)))
-    (is (true?  (:disable-changedetect cfg)))
+    (is (true?  (:socket_change_detect cfg)))
     (is (true?  (:lock-clockrate cfg)))
     (is (true?  (:external-clock cfg)))
     (is (true?  (:stereo-en cfg)))
@@ -59,7 +59,7 @@
 (deftest parse-booleans-false
   (let [cfg (driver/parse-config-bytes (byte-array 64))]
     (is (false? (:need-confirmation cfg)))
-    (is (false? (:disable-changedetect cfg)))
+    (is (false? (:socket_change_detect cfg)))
     (is (false? (:lock-clockrate cfg)))
     (is (false? (:external-clock cfg)))
     (is (false? (:stereo-en cfg)))
@@ -161,7 +161,7 @@
 
 (deftest commands-count
   (testing "always emits 26 SET_CONFIG commands"
-    (is (= 26 (count (driver/config->commands model/initial-config))))))
+    (is (= 27 (count (driver/config->commands model/initial-config))))))
 
 (deftest commands-clock-pal
   (let [cfg   (assoc model/initial-config :clock-rate :pal :lock-clockrate false)
@@ -301,10 +301,10 @@
       (is (false? (:mixed cfg))))))
 
 (deftest parse-legacy-no-confirm-flow
-  (testing "legacy parser hard-sets :need-confirmation / :disable-changedetect false"
+  (testing "legacy parser hard-sets :need-confirmation / :socket_change_detect false"
     (let [cfg (driver/parse-config-bytes :legacy (make-buf 2 1 3 1))]
       (is (false? (:need-confirmation cfg)))
-      (is (false? (:disable-changedetect cfg))))))
+      (is (false? (:socket_change_detect cfg))))))
 
 ; legacy write tests
 

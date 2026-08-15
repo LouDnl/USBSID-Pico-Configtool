@@ -49,8 +49,9 @@
      :raw-config           buf
      ; states
      :need-confirmation    (pos? (g 2)) ; Need configuration confirmation v1.5+ only
-     :disable-changedetect (pos? (g 3)) ; Disable socket change detection v1.5+ only
-     :last-preset          (:key (get model/preset-by-id (g 4)))
+     :socket_change_detect (pos? (g 3)) ; Disable socket change detection v1.5+ only
+     :preset_auto_detect   (pos? (bit-and (g 4) 0x80))
+     :last-preset          (:key (get model/preset-by-id (bit-and (g 4) 0x7f)))
      ; Clockworx
      :lock-clockrate       (pos? (g 5))
      :external-clock       (pos? (g 6))
@@ -101,7 +102,8 @@
 (defmethod parse-config-bytes* :legacy
   [_ ^bytes buf]
   ; v0.5.0 / v0.6.0 / v0.6.4 firmware byte layout. Differences vs v0.7.x:
-  ; - byte 2, 3, 60 are unused (need-confirmation / disable-changedetect / mirror-flip-mix don't exist).
+  ; - byte 2, 3, 60 are unused (need-confirmation / socket_change_detect / mirror-flip-mix don't exist).
+  ; - byte 4 is unused (preset_auto_detect and last_preset don't exist)
   ; - bytes 13 + 24 store clonetype (NOT packed SID-id nibbles). SID ids are implicit (0..3).
   ; - byte 22 stores the (global) mirrored flag.
   ; - chiptype byte 12/23 is the 3-value legacy enum (real/clone/unknown); combine with clonetype
@@ -114,7 +116,7 @@
         clk-id    (if clk-enum (Config$CLK/clkID clk-enum) 1)]
     {:raw-config           buf
      :need-confirmation    false
-     :disable-changedetect false
+     :socket_change_detect false
      :lock-clockrate       (pos? (g 5))
      :external-clock       (pos? (g 6))
      :clock-rate           (:key (get model/clock-rate-by-id clk-id {:key :pal}))
@@ -191,7 +193,8 @@
    [:mirrored]               22
    [:flipped]                23
    [:mixed]                  24
-   [:disable-changedetect]   25})
+   [:socket_change_detect]   25
+   [:preset_auto_detect]     26})
 
 (defmulti config->commands*
   "Convert a config map to a seq of [section item value] triples for SET_CONFIG.
@@ -233,7 +236,8 @@
      [0xC (if (:mirrored cfg) 1 0) 0] ; 22
      [0xD (if (:flipped cfg) 1 0) 0] ; 23
      [0xE (if (:mixed cfg) 1 0) 0] ; 24
-     [0xF (if (:disable-changedetect cfg) 1 0) 0]])) ; 25
+     [0xF (if (:socket_change_detect cfg) 1 0) 0] ; 25
+     [0x10 (if (:preset_auto_detect cfg) 1 0) 0]])) ; 26
 
 (defn- legacy-socket-cmds
   "SET_CONFIG triples for one legacy-firmware socket.
@@ -505,7 +509,7 @@
             (state/log! (format "Connected! FW: v%s PCB: v%s" fw pcb))
             (when (= (current-fw-line) :legacy)
               (state/log!
-               "Legacy firmware mode (v0.5/v0.6) - flipped / mixed / disable-changedetect controls disabled"))
+               "Legacy firmware mode (v0.5/v0.6) - flipped / mixed / socket_change_detect / preset_auto_detect controls disabled"))
             @(read-config!))
           (do (state/set-connection! :disconnected nil nil)
               (state/log! "Connection failed - device not found")))))))

@@ -151,7 +151,7 @@
                          :text        (:label
                                        (first
                                         (filter
-                                         (if (not (get-in config [:fmopl :enabled]))
+                                         (if (get-in config [:fmopl :enabled])
                                            (comp #{(get-in config [:fmopl :sidno])} :key)
                                            (comp #{0} :key))
                                          model/fmopl-sid-options)))
@@ -205,7 +205,7 @@
           (>= pcbverint 15))
          (conj
           {:fx/type     :label
-          :text        "(!v1.5+) Presets will only persist reboots if you disable automatic socket change detection!"
+          :text        "(!v1.5+) Presets will only persist reboots if you disable 'automatic socket change detection' and 'preset silent auto detect'!"
           :style-class ["c64-error-text" "c64-text-wrap"]}))}]}))
 
 (defn sockets-section

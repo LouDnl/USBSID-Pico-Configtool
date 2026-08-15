@@ -75,7 +75,9 @@
 
 (defmethod handle :save-noreset [{:keys [key]}]
   (when key (handle {:event/type :popup-hide :key key}))
-  (driver/save-config!))
+  (let [saved (driver/save-config!)]
+    (deref saved)
+    (handle {:event/type :read-config})))
 
 (defmethod handle :reload-flash [{:keys [key]}]
   (when key (handle {:event/type :popup-hide :key key}))
