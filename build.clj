@@ -15,7 +15,7 @@
 
 (def ^:private driver-group    "usbsid")
 (def ^:private driver-artifact "usbsid-usb-driver-library-java")
-(def ^:private driver-version  "1.1")
+(def ^:private driver-version  "1.2")
 
 (defn- ensure-driver!
   "Install the USBSID driver JAR/POM into the local Maven repo from assets/driver/ if absent."
