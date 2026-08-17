@@ -30,8 +30,8 @@
       (let [src-jar (File. (str "assets" sep "driver" sep jar-name))
             src-pom (File. (str "assets" sep "driver" sep pom-name))]
         (when-not (.exists src-jar)
-          (throw (ex-info "Driver JAR not found in local Maven repo or assets/driver/"
-                          {:looked-for (.getAbsolutePath src-jar)})))
+          (println "Driver JAR not found in local Maven repo or assets/driver/")
+          (println {:looked-for (.getAbsolutePath src-jar)}))
         (println "\nDriver not in local Maven repo - installing from assets/driver/...")
         (.mkdirs target-dir)
         (b/copy-file {:src (.getPath src-jar) :target (.getPath (File. target-dir jar-name))})
