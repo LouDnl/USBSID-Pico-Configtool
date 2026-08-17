@@ -11,6 +11,8 @@ on:
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+  DRIVERJAR: usbsid-usb-driver-library-java-1.2.jar
+  DRIVERPOM: usbsid-usb-driver-library-java-1.2.pom
 
 jobs:
 
@@ -42,8 +44,8 @@ jobs:
         run: |
           DIR="$HOME/.m2/repository/usbsid/usbsid-usb-driver-library-java/1.1"
           mkdir -p "$DIR"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.jar "$DIR/"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.pom "$DIR/"
+          cp assets/driver/${{ env.DRIVERJAR }} "$DIR/"
+          cp assets/driver/${{ env.DRIVERPOM }} "$DIR/"
 
       - name: Install patched libusb4java (Windows native lib fix)
         shell: bash
@@ -81,8 +83,8 @@ jobs:
         run: |
           DIR="$HOME/.m2/repository/usbsid/usbsid-usb-driver-library-java/1.1"
           mkdir -p "$DIR"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.jar "$DIR/"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.pom "$DIR/"
+          cp assets/driver/${{ env.DRIVERJAR }} "$DIR/"
+          cp assets/driver/${{ env.DRIVERPOM }} "$DIR/"
 
       - name: Install patched libusb4java (Windows native lib fix)
         shell: bash
@@ -150,8 +152,8 @@ jobs:
         run: |
           DIR="$HOME/.m2/repository/usbsid/usbsid-usb-driver-library-java/1.1"
           mkdir -p "$DIR"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.jar "$DIR/"
-          cp assets/driver/usbsid-usb-driver-library-java-1.1.pom "$DIR/"
+          cp assets/driver/${{ env.DRIVERJAR }} "$DIR/"
+          cp assets/driver/${{ env.DRIVERPOM }} "$DIR/"
 
       - name: Install patched libusb4java (Windows native lib fix)
         shell: bash
