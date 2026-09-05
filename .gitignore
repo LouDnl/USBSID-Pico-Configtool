@@ -5,6 +5,7 @@
 !.gitignore
 !.version
 !README.md
+!CHANGELOG.md
 !LICENSE
 !deps.edn
 !.keep
